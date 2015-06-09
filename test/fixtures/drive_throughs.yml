@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  food: MyText
+  total_macros: MyText
+
+two:
+  user_id: 1
+  food: MyText
+  total_macros: MyText

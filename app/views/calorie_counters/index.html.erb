@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if IE]>
+                <style type="text/css">
+                  @import 'iestyle.css';
+                </style>
+                <![endif]-->
+                <script type="text/javascript">var ie9 = 0;var ie8=0;</script>
+    <!--[if IE 9]>
+              <script type="text/javascript">ie9 = 1;</script>
+              <![endif]-->
+        <!--[if IE 8]>
+              <script type="text/javascript">ie8 = 1;</script>
+              <![endif]-->
+    <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+          <![endif]-->
+          <script type="text/javascript" src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+          <script language="javascript" type="text/javascript" src="http://swole.me/static_files/jscript/jscharts.js"></script>
+          <script language="javascript" type="text/javascript" src="http://swole.me/static_files/jscript/metricfoods.js"></script>
+          <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+          <script language="javascript" type="text/javascript" src="http://swole.me/static_files/jscript/jquery.qtip.js"></script>
+          <script language="javascript" type="text/javascript" src="http://swole.me/static_files/jscript/jquery.ezmark.min.js"></script>
+          <script language="javascript" type="text/javascript" src="http://swole.me/static_files/jscript/jquery-ui-1.8.14.custom.min.js"></script>
+          <script language="javascript" type="text/javascript" src="http://swole.me/static_files/jscript/jquery.cookie.js"></script>
+
+          <script language="javascript" type="text/javascript" src="http://swole.me/static_files/jscript/bootstrap.js"></script>
+    <!--<script language="javascript" type="text/javascript" src="http://swole.me/static_files/jscript/jsfile.js"></script>
+  -->
+  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+
+
+
+  <!-- styles -->
+  <link href="http://swole.me/static_files/css/reset.css" rel="stylesheet" type="text/css">
+  <link href="http://swole.me/static_files/css/jquery-ui-1.8.14.custom.css" rel="stylesheet">
+  <link href="http://swole.me/static_files/css/bootstrap.css" rel="stylesheet">
+  <!-- <link href="http://swole.me/static_files/css/newstyle.css" rel="stylesheet" type="text/css"> -->
+  <link href="http://swole.me/static_files/css/liststyle.css" rel="stylesheet" type="text/css">
+
+    <!--[if IE]>
+      <link href="http://swole.me/static_files/css/iestyle.css" rel="stylesheet" type="text/css">
+      <![endif]-->
+
+
+
+
+
+      <link href="/static_files/css/howto.css" rel="stylesheet" type="text/css">
+      <link href="/static_files/css/liststyle.css" rel="stylesheet" type="text/css">
+
+      <script language="javascript" type="text/javascript">
+
+        $(document).ready(function(){
+          $(".metric_calc").hide();
+          $("input[name=lbs_kg]").change(function() {
+            var calc_div = $(this).val();
+            $(".imperial_calc").hide();
+            $(".metric_calc").hide();
+            $("."+calc_div).show();
+          });
+          $('.activity_tooltip').qtip({
+            show: 'mouseover',
+            hide: 'mouseout',
+            position: { corner: { tooltip: 'topLeft' } },
+            content: "<strong>Sedentary</strong> = Little or no exercise and desk job <br /><strong>Lightly Active</strong> = Little daily activity & light exercise 1-3 days a week <br /><strong>Moderately Active</strong> = Moderately active daily life & Moderate exercise 3-5 days a week <br /><strong>Very Active</strong> = Physically demanding lifestyle & Hard exercise or sports 6-7 days a week <br /><strong>Extremely Active</strong> = Hard daily exercise or sports and physical job",
+            style: {fontFamily: 'Helvetica', fontSize: 12, width:520, name: 'light', tip: true }
+          });
+
+        })
+
+
+
+function calculateCalories(){
+  var units = $('input:radio[name=lbs_kg]:checked').val();
+  var multiplier = 1;
+  if (units == "metric_calc"){
+    var weight = ($(".kg_input").val());
+
+    var meters = 0;
+    var centimeters = 0;
+    if (parseInt($(".meters_input").val())){
+      meters = parseInt(100*($(".meters_input").val()));
+    }
+    if (parseInt($(".cm_input").val())){
+      centimeters = parseInt($(".cm_input").val());
+    }
+    var height = meters+centimeters;
+      //convert to imperial
+      weight = weight * 2.2046;
+      height = height * 0.3937007;
+    }
+    else if (units == "imperial_calc"){
+
+      var feet = 0;
+      var inches = 0;
+      if (parseInt($(".feet_input").val())){
+        feet = parseInt(12*($(".feet_input").val()));
+      }
+      if (parseInt($(".inches_input").val())){
+        inches = parseInt($(".inches_input").val());
+      }
+      var height = feet+inches;
+      var weight = ($(".lbs_input").val());
+    }
+
+    var age = $(".years_input").val();
+    var gender = $('input:radio[name=gender_radio]:checked').val();
+    var activity_level= $(".activity_level").val();
+//    var exercise_time= $(".exercise_time").val();
+//    var exercise_intensity= $(".exercise_intensity").val();
+
+if (gender =="male"){
+        //var BMR = 66 + ( 6.23 * weight ) + ( 12.7 * height ) - ( 6.76 * age );
+        var constant = 5
+      }
+
+      else if (gender =="female"){
+        //var BMR = 655 + ( 4.35 * weight ) + ( 4.7 * height ) - ( 4.7 * age );
+        var constant = -161;
+      }
+
+      var BMR = ((10/2.2046)*weight) + (15.875*height) - (5*age) + constant;
+
+      BMR = parseInt(BMR);
+
+
+
+      var weight_gain_cals = Math.ceil((BMR * activity_level) * 1.2);
+      var maintenance_cals = Math.ceil(BMR * activity_level);
+      var weight_loss_cals = Math.ceil((BMR * activity_level) * 0.80);
+
+//      var nontraining_output_wg = ((1.33*weight) + (activity_level * (10 * (weight - (weight * (bodyfat/100))) + 500)) * 1.1);
+
+//      var training_output_mt= ((1.33*weight) + (activity_level * (10 * (weight - (weight * (bodyfat/100))) + 500)) + ((weight/2.205) * (exercise_time/60) * exercise_intensity));
+//      var nontraining_output_mt= ((1.33*weight) + (activity_level * (10 * (weight - (weight * (bodyfat/100))) + 500)));
+
+//      var training_output_wl= ((1.33*weight) + (activity_level * (10 * (weight - (weight * (bodyfat/100))) + 500)) + ((weight/2.205) * (exercise_time/60) * exercise_intensity)) * 0.85;
+//      var nontraining_output_wl= ((1.33*weight) + (activity_level * (10 * (weight - (weight * (bodyfat/100))) + 500)) * 0.85);
+
+var calOutput = '<table border="0" bordercolor="#FFFFFF" style="background-color:#FFFFFF" width="220" cellpadding="3" cellspacing="3"> <tr> <td><strong>Weight Gain</strong></td> <td>'+weight_gain_cals+' calories</td> </tr> <tr> <td><strong>Maintenance</strong></td> <td>'+maintenance_cals+' calories</td> </tr>  <tr><td><strong>Weight Loss</strong></td><td>'+weight_loss_cals+' calories</td></tr></table>';
+
+document.getElementById("totalCals").innerHTML= calOutput;
+}
+
+</script>
+
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-26192217-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+
+    <style>
+      /* Only necessary if you are using navbar-fixed-top */
+      body {
+        padding-top: 60px;
+      }
+    </style>
+
+    <%= stylesheet_link_tag    "application", :media => "all" %>
+
+    <%= csrf_meta_tags %>
+
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
+
+
+
+<body>
+  <div class="container">
+    <div class="well">
+      <div class="calculator_container">
+
+        <h1>Calorie calculator</h1>
+
+        <div class="calculator_box">
+          <div class="calculator_leftside">
+           This is an approximation based on the Mifflin-St Jeor Equation
+           <br/>
+           <div class="units_radio">
+            <input class="lbs_kg" checked type="radio" name="lbs_kg" value="imperial_calc"/> Imperial <input class="lbs_kg" type="radio" name="lbs_kg" value="metric_calc"/> Metric
+          </div>
+          <div class="imperial_calc">
+            <span class="height_input">Height: <input class="feet_input calc_input" type="text"/> ft <input class="inches_input calc_input" type="text"/> in </span>
+            <br/>
+            <div class="weight_input">
+             Weight: <input class="lbs_input calc_input" type="text"/> lbs
+           </div>
+         </div>
+         <div class="metric_calc">
+          <span class="height_input">Height: <input class="meters_input calc_input" type="text"/> m <input class="cm_input calc_input" type="text"/> cm </span>
+          <br/>
+          <div class="weight_input">
+           Weight: <input class="kg_input calc_input" type="text"/> kg
+         </div>
+       </div>
+       <div class="rest_of_calc">
+        <div class="age_input">
+         Age: <input class="years_input calc_input" type="text"/>
+       </div>
+       <div class="gender_input">
+        <input class="gender_radio" checked type="radio" name="gender_radio" value="male"/> Male <input class="gender_radio" type="radio" name="gender_radio" value="female"/> Female
+      </div>
+      <div class="activity_lvl_div">
+       Daily activity level
+       <select class="activity_level" name="activity_level">
+        <option value='1.2'>Sedentary</option>
+        <option value='1.375' selected>Lightly Active</option>
+        <option value='1.55'>Moderately Active</option>
+        <option value='1.725'>Very Active</option>
+        <option value='1.9'>Extremely Active</option>
+      </select>
+    </div>
+    <button class="btn" onclick="calculateCalories()">Calculate</button>
+    <br/>
+
+  </div>
+</div>
+</div>
+<div id="totalCals">
+</div>
+</div>
+
+*Keep in mind that this is an estimate. Watch your progress for a few weeks and then make the appropriate adjustments to your diet.
+
+</div>
+
+
+
+
+
+</div>
+
+</body>
+
+
+
+</html>
+

@@ -1,0 +1,2 @@
+module CalorieCountersHelper
+end

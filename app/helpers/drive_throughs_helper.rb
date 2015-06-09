@@ -1,0 +1,2 @@
+module DriveThroughsHelper
+end
